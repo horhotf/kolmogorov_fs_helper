@@ -13,6 +13,7 @@ def init_db_uid(connection_pool: SimpleConnectionPool):
         uid TEXT,
         status TEXT,
         feature_view TEXT,
+        version INTEGER,
         fields TEXT,
         filtred_params TEXT,
         file TEXT,
@@ -27,13 +28,13 @@ def init_db_uid(connection_pool: SimpleConnectionPool):
     cur.close()
     connection_pool.putconn(conn)
 
-def db_check_fv(connection_pool:SimpleConnectionPool, table_name:str, fields:str = None, filtred_params:str = None):
+def db_check_fv(connection_pool:SimpleConnectionPool, table_name:str, version: int, fields:str = None, filtred_params:str = None):
     conn = connection_pool.getconn()
     cur = conn.cursor()
 
     query_check_fv = f"""
             SELECT EXISTS(SELECT 1 FROM uid_status 
-            WHERE feature_view = '{table_name}'
+            WHERE feature_view = '{table_name}' and version = '{version}'
         """
     if fields != None:
         query_check_fv = query_check_fv + f" and fields = '{fields}'"
@@ -49,7 +50,7 @@ def db_check_fv(connection_pool:SimpleConnectionPool, table_name:str, fields:str
     if check:
         query_get_file = f"""
             SELECT file, status FROM uid_status 
-            WHERE feature_view = '{table_name}' 
+            WHERE feature_view = '{table_name}' and version = '{version}'
         """
         if fields != None:
             query_get_file = query_get_file + f" and fields = '{fields}'"
@@ -73,6 +74,7 @@ def db_check_fv(connection_pool:SimpleConnectionPool, table_name:str, fields:str
 def db_status_uid(
     connection_pool:SimpleConnectionPool, 
     func:str, 
+    version:int = None,
     uid:str = None, 
     file:str = None, 
     feature_view:str = None, 
@@ -87,8 +89,8 @@ def db_status_uid(
 
         if func == "ADD":
             query_add = f"""
-                INSERT INTO uid_status (uid, status, feature_view, fields, filtred_params, file, update_timestamp) 
-                VALUES ('{uid}', 'CREATE', '{feature_view}', '{fields}', '{filtred_params}', 'None', CURRENT_TIMESTAMP);
+                INSERT INTO uid_status (uid, status, feature_view, version, fields, filtred_params, file, update_timestamp) 
+                VALUES ('{uid}', 'CREATE', '{feature_view}', '{version}', '{fields}', '{filtred_params}', 'None', CURRENT_TIMESTAMP);
             """
 
             cur.execute(query_add)

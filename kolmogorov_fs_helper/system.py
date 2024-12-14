@@ -6,6 +6,7 @@ from pythonjsonlogger import jsonlogger
 
 import uuid
 import time
+import os
 
 def read_yaml_config(file_path:str):
     try:
@@ -20,7 +21,7 @@ def read_yaml_config(file_path:str):
 
 # Логирование
 def setup_logger(yaml_config):
-    logger = logging.getLogger(yaml_config['Server']['Name'])
+    logger = logging.getLogger(os.getenv("HOSTNAME"))
     logger.setLevel(yaml_config['Logging']['Level'])
 
     # Хэндлер для записи в файл с ротацией

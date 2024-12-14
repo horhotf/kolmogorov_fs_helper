@@ -18,7 +18,9 @@ setup(
         "slowapi",
         "hdfs",
         "humanfriendly",
-        "protobuf==5.29.1"
+        "protobuf==5.29.1",
+        "jsonify",
+        "pyjwt==2.10.1"
     ],
     python_requires=">=3.9",
 )
