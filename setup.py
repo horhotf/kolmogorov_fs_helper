@@ -20,7 +20,9 @@ setup(
         "humanfriendly",
         "protobuf==5.29.1",
         "jsonify",
-        "pyjwt==2.10.1"
+        "pyjwt==2.10.1",
+        "asyncio",
+        "aiohttp"
     ],
     python_requires=">=3.9",
 )

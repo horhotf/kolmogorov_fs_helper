@@ -28,3 +28,4 @@ def stream_parquet_rows(spark: pyspark.sql.SparkSession, file_path, METRICS_URL:
             except Exception:
                 print("stream_parquet_rows: METRICS SERVER NOT READY")
             spark.stop()
+
