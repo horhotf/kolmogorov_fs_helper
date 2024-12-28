@@ -53,6 +53,7 @@ class Helper:
             if response.status_code == 201:
                 res = json.loads(response.text)
                 uid = res["uid"]
+                print("uid: " + str(uid))
                 data_uid = {"uid": uid}
                 start_ts = time.time()
                 time.sleep(30)
@@ -198,3 +199,24 @@ class Helper:
         
         json_data = json.loads(dataset)
         return dict(zip(json_data['metadata']['feature_names'], [result['values'][0] for result in json_data['results']]))
+
+
+    def stop_task(self, uid: str):
+        url = self.url + "/stop-task"
+        
+        data = {
+            "uid": uid
+        }
+        try:
+            response = requests.post(url, data=json.dumps(data))
+            if response.status_code == 200:
+                return response.text
+            elif 400 <= response.status_code < 500:
+                print(f"Client error: {response.status_code} - {response.text}")
+            elif 500 <= response.status_code < 600:
+                print(f"Server error: {response.status_code} - {response.text}")
+            else:
+                print(f"Unexpected error: {response.status}")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+            return None
